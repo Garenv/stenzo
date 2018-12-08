@@ -5,7 +5,6 @@ import Next from "./Next";
 class Home extends Component {
     constructor(props) {
         super(props);
-        this.goNext = this.goNext.bind(this);
     }
 
     render() {
@@ -22,6 +21,8 @@ class Home extends Component {
                         <label htmlFor="password">Password</label>
                         <input className="form-control" type="password" name="password"/>
                     </div>
+
+                    <h1>testing</h1>
 
                     <Router>
                         <Link to={Next}>
