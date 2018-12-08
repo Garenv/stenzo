@@ -8,10 +8,6 @@ class Home extends Component {
         this.goNext = this.goNext.bind(this);
     }
 
-    goNext = (e) => {
-        alert("hey");
-    };
-
     render() {
         return (
             <div>
