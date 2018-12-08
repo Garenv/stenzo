@@ -22,13 +22,7 @@ class Home extends Component {
                         <input className="form-control" type="password" name="password"/>
                     </div>
 
-                    <h1>testing</h1>
-
-                    <Router>
-                        <Link to={Next}>
-                            <button className="btn btn-primary" onSubmit={(e) => this.goNext(e)} value="Login" name={"submit"}>Submit</button>
-                        </Link>
-                    </Router>
+                    <button className="btn btn-primary" value="Login" name={"submit"}>Submit</button>
 
                 </form>
             </div>
