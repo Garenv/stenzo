@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Upload from "./Upload";
+import Upload from "./Upload/Upload";
 
 class Login extends Component {
     constructor(props) {
@@ -17,7 +17,7 @@ class Login extends Component {
         const formData = new FormData();
         formData.append('json', JSON.stringify(this.state));
 
-        fetch("http://localhost/demo_react/api/demo.php", {
+        fetch("http://localhost/stenzo/demo_react/api/demo.php", {
             method: "POST",
             body: formData
         }).then((response) => {

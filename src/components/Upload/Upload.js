@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
+import 'bulma/css/bulma.css';
+import './Upload.css';
 
 class Upload extends Component {
     constructor(props) {
@@ -8,7 +10,8 @@ class Upload extends Component {
         this.state = {
             selectedFile: null,
             prevImgURL: '',
-            imgPrev: false
+            imgPrev: false,
+            success: false
         };
         this.imageChange = this.imageChange.bind(this);
     }
@@ -17,8 +20,8 @@ class Upload extends Component {
         this.setState({imgPrev: newPostImageBool});
 
         if(this.state.selectedFile === null) {
-            alert("can't click on this cuz it's empty");
-            return null;
+            alert("can't preview a picture on this because it's empty");
+            this.setState({imgPrev: false});
         }
     };
 
@@ -37,30 +40,41 @@ class Upload extends Component {
                 prevImgURL: reader.result
             });
         };
+
         if(file) reader.readAsDataURL(file);
+
+        this.setState({success: true});
     }
 
     render() {
         return (
             <div>
-                <input
-                    id="new_post_image"
-                    type="file"
-                    onChange={this.imageChange}
-                    name="image"
-                    accept="image/*"
-                />
+                <div className="inputWrapper">
+                    <input
+                        id="new_post_image"
+                        className="button is-success is-outlined"
+                        type="file"
+                        style={{display: 'none'}}
+                        onChange={this.imageChange}
+                        name="image"
+                        accept="image/*"
+                    />
 
-                <button
-                    id="filled"
-                    type="button"
-                    onClick={() => this.imagePreview(true)}
-                    className="btn btn-info btn-lg"
-                    data-toggle="modal"
-                    data-target="#myModal"
-                >
-                    Preview Image
-                </button>
+                    <label className="button is-success is-outlined" htmlFor="new_post_image">Upload</label>
+
+                    <br/>
+
+                    <button
+                        id="preview"
+                        type="button"
+                        onClick={() => this.imagePreview(true)}
+                        className="button is-link is-outlined"
+                        data-toggle="modal"
+                        data-target="#myModal"
+                    >
+                        Preview Image
+                    </button>
+                </div>
 
                 {this.state.imgPrev ?
                     <div className="modal-dialog">
@@ -87,10 +101,21 @@ class Upload extends Component {
                                     onClick={this.closeModal}
                                 >
                                     Close</button>
+
+                                <button
+                                    type="button"
+                                    className="btn btn-default"
+                                    data-dismiss="modal"
+                                    onClick={this.closeModal}
+                                >
+                                    Submit</button>
                             </div>
                         </div>
                     </div>
                     : null}
+                {this.state.success ? <div className="alert alert-success">
+                    <strong>Chosen image is successful!  Now click Preview and make sure that's the one you want to upload!</strong>
+                </div> : null}
             </div>
         );
     }
