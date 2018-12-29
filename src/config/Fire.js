@@ -13,12 +13,11 @@ const config = {
 firebase.initializeApp(config);
 
 const storage = firebase.storage();
+// const fire = firebase.initializeApp(config);
 
 export {
     storage, firebase as default
 }
-
-
 
 // import firebase from 'firebase';
 //

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import 'bulma/css/bulma.css';
-import firebase from 'firebase';
+import firebase from 'firebase'
 import axios from '../../axios-chosen';
 import './Upload.css';
 import {storage} from '../../config/Fire';
@@ -54,6 +54,7 @@ class Upload extends Component {
         // console.log("clicked");
         const {file} = this.state;
         const uploadTask = storage.ref(`images/${file.name}`).put(file);
+
         uploadTask.on('state_changed',
             (snapshot) => {
                 // progrss function ....
@@ -71,6 +72,25 @@ class Upload extends Component {
                     this.setState({url});
                 })
             });
+
+        let user = firebase.auth().currentUser;
+        let userEmail = "";
+
+        if(user !== null) {
+            user.providerData.forEach(function (profile) {
+                userEmail = profile.email;
+            })
+        }
+
+        const userInfo = {
+            userEmail,
+            file
+        }
+
+        axios.post(`/userInfo.json`, userInfo)
+            .then((response) => console.log("Here's the response " + response))
+            .catch(error => console.log("Here's the error " + error));
+
     };
 
     render() {
