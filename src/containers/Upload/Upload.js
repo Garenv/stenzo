@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import 'bulma/css/bulma.css';
 import firebase from 'firebase';
 import axios from '../../axios-chosen';
 import './Upload.css';
+import {storage} from '../../config/Fire';
 
 class Upload extends Component {
     constructor(props) {
@@ -10,39 +11,14 @@ class Upload extends Component {
 
         this.state = {
             selectedFile: null,
+            displayEmail: '',
             previewImgURL: '',
             imgPrev: false,
-            success: false,
-            image: null
+            success: false
         };
         this.imageUpload = this.imageUpload.bind(this);
+        this.submitImage = this.submitImage.bind(this);
     }
-
-    displayName = () => {
-        let user = firebase.auth().currentUser;
-        let userEmail = " ";
-
-        if(user !== null) {
-            user.providerData.forEach(function(profile) {
-                console.log(userEmail);
-                userEmail = profile.email;
-            });
-        }
-
-        let userInfo = {
-            userEmail
-        };
-
-        axios.post('/chosen.json', userInfo)
-            .then(response => console.log(response))
-            .catch(error => console.log(error));
-
-        return(
-            <div>
-                <p>Welcome {userEmail}</p>
-            </div>
-        );
-    };
 
     imagePreview = (newPostImageBool) => {
         this.setState({imgPrev: newPostImageBool});
@@ -58,7 +34,6 @@ class Upload extends Component {
     };
 
     imageUpload(e) {
-        e.preventDefault();
         let reader = new FileReader();
         let file = e.target.files[0];
 
@@ -67,52 +42,67 @@ class Upload extends Component {
                 selectedFile: file,
                 previewImgURL: reader.result
             });
-            // console.log("Here's value => " + this.state.previewImgURL);
         };
+
         if (file) reader.readAsDataURL(file); // Allows user to preview image uploaded
+
+        this.setState(() => ({file}));
         this.setState({success: true});
     }
 
     submitImage() {
-
-
-    }
+        // console.log("clicked");
+        const {file} = this.state;
+        const uploadTask = storage.ref(`images/${file.name}`).put(file);
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                // progrss function ....
+                const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                this.setState({progress});
+            },
+            (error) => {
+                // error function ....
+                console.log(error);
+            },
+            () => {
+                // complete function ....
+                storage.ref('images').child(file.name).getDownloadURL().then(url => {
+                    console.log(url);
+                    this.setState({url});
+                })
+            });
+    };
 
     render() {
         return (
             <div>
-                {this.displayName()}
-                <form method="post"
-                      encType="multipart/form-data">
-                    <div className="inputWrapper">
-                        <input
-                            id="new_post_image"
-                            name="post_image"
-                            className="button is-success is-outlined"
-                            type="file"
-                            style={{display: 'none'}}
-                            onChange={this.imageUpload}
-                            accept="image/*"
-                        />
+                <div className="inputWrapper">
+                    <input
+                        id="new_post_image"
+                        name="post_image"
+                        className="button is-success is-outlined"
+                        type="file"
+                        style={{display: 'none'}}
+                        onChange={this.imageUpload}
+                        accept="image/*"
+                    />
 
-                        <label className="button is-success is-outlined" htmlFor="new_post_image">Upload</label>
+                    <label className="button is-success is-outlined" htmlFor="new_post_image">Upload</label>
 
-                        <br/>
+                    <br/>
 
-                        <button
-                            id="preview"
-                            type="button"
-                            onClick={() => this.imagePreview(true)}
-                            className="button is-link is-outlined"
-                            data-toggle="modal"
-                            data-target="#myModal"
-                        >
-                            Preview Image
-                        </button>
+                    <button
+                        id="preview"
+                        type="submit"
+                        onClick={() => this.imagePreview(true)}
+                        className="button is-link is-outlined"
+                        data-toggle="modal"
+                        data-target="#myModal"
+                    >
+                        Preview Image
+                    </button>
 
-                    </div>
-
-                </form>
+                </div>
 
                 {this.state.imgPrev ?
                     <div className="modal-dialog">
@@ -127,7 +117,6 @@ class Upload extends Component {
                                 >
                                     &times;</button>
                             </div>
-
 
                             <div className="modal-body">
                                 <img className="img-responsive" src={this.state.previewImgURL}/>
@@ -158,6 +147,7 @@ class Upload extends Component {
                             </div>
 
                             {/*/\/\/\/\ End Modal /\/\/\/\/\*/}
+
                         </div>
                     </div>
                     : null}
