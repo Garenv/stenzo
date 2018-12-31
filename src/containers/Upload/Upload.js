@@ -3,7 +3,11 @@ import 'bulma/css/bulma.css';
 import firebase from 'firebase'
 import axios from '../../axios-chosen';
 import './Upload.css';
+import Stack from '../../containers/Stack/Stack';
 import {storage} from '../../config/Fire';
+import {Link} from 'react-router-dom';
+
+// import { Alertify } from 'alertifyjs';
 
 class Upload extends Component {
     constructor(props) {
@@ -14,10 +18,17 @@ class Upload extends Component {
             displayEmail: '',
             previewImgURL: '',
             imgPrev: false,
-            success: false
+            success: false,
+            progress: 0,
+            redirectToStackAfterPhotoSubmit: false,
+            url: ''
         };
         this.imageUpload = this.imageUpload.bind(this);
-        this.submitImage = this.submitImage.bind(this);
+        this.submitImageAndRedirect = this.submitImageAndRedirect.bind(this);
+    }
+
+    componentWillMount() {
+
     }
 
     imagePreview = (newPostImageBool) => {
@@ -50,8 +61,7 @@ class Upload extends Component {
         this.setState({success: true});
     }
 
-    submitImage() {
-        // console.log("clicked");
+    submitImageAndRedirect() {
         const {file} = this.state;
         const uploadTask = storage.ref(`images/${file.name}`).put(file);
 
@@ -76,7 +86,7 @@ class Upload extends Component {
         let user = firebase.auth().currentUser;
         let userEmail = "";
 
-        if(user !== null) {
+        if (user !== null) {
             user.providerData.forEach(function (profile) {
                 userEmail = profile.email;
             })
@@ -85,17 +95,39 @@ class Upload extends Component {
         const userInfo = {
             userEmail,
             file
-        }
+        };
+
+        this.setState({redirectToStackAfterPhotoSubmit: true});
 
         axios.post(`/userInfo.json`, userInfo)
             .then((response) => console.log("Here's the response " + response))
             .catch(error => console.log("Here's the error " + error));
-
     };
 
     render() {
+        const redirectToStackAfterPhotoSubmit = this.state.redirectToStackAfterPhotoSubmit;
+
+        if (redirectToStackAfterPhotoSubmit) {
+            return (
+                <Stack
+                    imagesOnStack={this.state.url || 'http://via.placeholder.com/400x300'}
+                    alt="Uploaded Images"
+                    height="300"
+                    Width="400"
+                />
+            );
+        }
+
         return (
             <div>
+                {this.state.success ? <div className="alert alert-success">
+                    <strong>Chosen image is successful!
+                        Now click Preview and make sure that's the one you want to upload!</strong>
+                </div> : null}
+
+                {/* Progress bar illustrating successful upload to DB */}
+                <progress value={this.state.progress} max="100"/>
+
                 <div className="inputWrapper">
                     <input
                         id="new_post_image"
@@ -135,7 +167,8 @@ class Upload extends Component {
                                     data-dismiss="modal"
                                     onClick={this.closeModal}
                                 >
-                                    &times;</button>
+                                    &times;
+                                </button>
                             </div>
 
                             <div className="modal-body">
@@ -154,16 +187,19 @@ class Upload extends Component {
                                     Close
                                 </button>
 
-                                <button
-                                    type="submit"
-                                    className="btn btn-default"
-                                    data-dismiss="modal"
-                                    onClick={this.submitImage}
-                                    name={"post_image_submit"}
-                                >
-                                    Submit
-                                </button>
-
+                                <Link to={{
+                                    pathname: '/Deck'
+                                }}>
+                                    <button
+                                        type="submit"
+                                        className="btn btn-default"
+                                        data-dismiss="modal"
+                                        onClick={this.submitImageAndRedirect}
+                                        name={"post_image_submit"}
+                                    >
+                                        Submit
+                                    </button>
+                                </Link>
                             </div>
 
                             {/*/\/\/\/\ End Modal /\/\/\/\/\*/}
@@ -171,10 +207,6 @@ class Upload extends Component {
                         </div>
                     </div>
                     : null}
-                {this.state.success ? <div className="alert alert-success">
-                    <strong>Chosen image is successful!
-                        Now click Preview and make sure that's the one you want to upload!</strong>
-                </div> : null}
             </div>
         );
     }

@@ -83,13 +83,3 @@ class Login extends Component {
 }
 
 export default Login;
-
-// import React from 'react';
-// import { withRouter } from "react-router-dom";
-// import Upload from '../../containers/Upload/Upload';
-//
-// const loginButton = (props) => (
-//     <input type="submit" value="click" name={"submit"} onClick={props.clicked}/>
-// );
-//
-// export default loginButton;
