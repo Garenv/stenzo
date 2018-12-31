@@ -21,14 +21,12 @@ class Upload extends Component {
             success: false,
             progress: 0,
             redirectToStackAfterPhotoSubmit: false,
-            url: ''
+            url: '',
+            picture: [],
+            selectedPictureIndex: 0
         };
         this.imageUpload = this.imageUpload.bind(this);
         this.submitImageAndRedirect = this.submitImageAndRedirect.bind(this);
-    }
-
-    componentWillMount() {
-
     }
 
     imagePreview = (newPostImageBool) => {
@@ -92,16 +90,17 @@ class Upload extends Component {
             })
         }
 
-        const userInfo = {
-            userEmail,
-            file
-        };
+        const userInfo = {userEmail, file};
 
         this.setState({redirectToStackAfterPhotoSubmit: true});
 
         axios.post(`/userInfo.json`, userInfo)
             .then((response) => console.log("Here's the response " + response))
             .catch(error => console.log("Here's the error " + error));
+
+
+
+
     };
 
     render() {
