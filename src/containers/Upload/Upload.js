@@ -22,8 +22,7 @@ class Upload extends Component {
             progress: 0,
             redirectToStackAfterPhotoSubmit: false,
             url: '',
-            picture: [],
-            selectedPictureIndex: 0
+            picture: []
         };
         this.imageUpload = this.imageUpload.bind(this);
         this.submitImageAndRedirect = this.submitImageAndRedirect.bind(this);
@@ -97,19 +96,16 @@ class Upload extends Component {
         axios.post(`/userInfo.json`, userInfo)
             .then((response) => console.log("Here's the response " + response))
             .catch(error => console.log("Here's the error " + error));
-
-
-
-
     };
 
     render() {
         const redirectToStackAfterPhotoSubmit = this.state.redirectToStackAfterPhotoSubmit;
+        const { url } = this.state;
 
         if (redirectToStackAfterPhotoSubmit) {
             return (
                 <Stack
-                    imagesOnStack={this.state.url || 'http://via.placeholder.com/400x300'}
+                    imagesOnStack={url || 'http://via.placeholder.com/400x300'}
                     alt="Uploaded Images"
                     height="300"
                     Width="400"

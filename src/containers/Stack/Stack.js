@@ -8,7 +8,6 @@ class Stack extends Component {
             picture: [],
             selectedPicture: 0
         };
-
         this.toggleNext = this.toggleNext.bind(this);
         this.togglePrevious = this.togglePrevious.bind(this);
     }
@@ -38,7 +37,6 @@ class Stack extends Component {
     render() {
         return(
             <div>
-                <h1>Reach Deck (Stack page)</h1>
                 <img src={this.props.imagesOnStack} alt=""/>
                 <button onClick={this.toggleNext}>Next</button>
                 <button onClick={this.togglePrevious}>Prev</button>
