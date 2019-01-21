@@ -1,14 +1,13 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import './App.css';
-import Login from './containers/Login/Login';
-// import Upload from './containers/Upload/Upload';
+import LoginSignUpContainer from './containers/LoginSignUpContainer/LoginSignUpContainer';
 
 class App extends Component {
+
     render() {
         return (
             <div className="App">
-                <Login/>
-                {/*<Upload/>*/}
+                <LoginSignUpContainer/>
             </div>
         );
     }

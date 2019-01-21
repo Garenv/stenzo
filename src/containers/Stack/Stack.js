@@ -8,6 +8,7 @@ class Stack extends Component {
             picture: [],
             selectedPicture: 0
         };
+
         this.toggleNext = this.toggleNext.bind(this);
         this.togglePrevious = this.togglePrevious.bind(this);
     }
@@ -15,6 +16,7 @@ class Stack extends Component {
     toggleNext() {
         console.log("clicked toggleNext()");
         if(this.state.selectedPicture === this.state.picture.length - 1) {
+            console.log("This is this.state.selectedPicture ==> " + this.state.selectedPicture);
             return;
         }
 

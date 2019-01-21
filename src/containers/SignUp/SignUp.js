@@ -1,8 +1,5 @@
-import React, {Component} from 'react';
-import fire from '../../config/Fire';
+import React, { Component } from 'react';
 import Upload from '../../containers/Upload/Upload';
-import { Link } from 'react-router-dom';
-import LoginSignUpContainer from '../../containers/LoginSignUpContainer/LoginSignUpContainer';
 
 import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
@@ -17,6 +14,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
+
+import fire from '../../config/Fire';
 
 const styles = theme => ({
     main: {
@@ -50,7 +49,7 @@ const styles = theme => ({
     },
 });
 
-class Login extends Component {
+class SignUp extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -58,72 +57,63 @@ class Login extends Component {
             password: '',
             loading: false,
             redirect: false,
-            loginVisible: false
         };
-        this.login = this.login.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        // this.buttonSwitched = this.buttonSwitched
+        this.signup = this.signup.bind(this);
     }
 
     handleChange(e) {
         this.setState({[e.target.name]: e.target.value});
     }
 
-    login() {
-        this.setState({loading: true, redirect: true});
-
-        fire.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then((u) => {
+    signup(e) {
+        e.preventDefault();
+        fire.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((u) => {
+        }).then((u) => {
+            console.log("Success " + u)
         }).catch((error) => {
-            console.log(error);
-        });
+            console.log("Error " + error);
+        })
     }
 
     render() {
         const next = this.state.redirect;
-        const loginVisible = this.state.loginVisible;
         const {classes} = this.props;
 
         if (next) return <Upload/>;
 
         return (
             <main className={classes.main}>
-                {/* Can't put <LoginSignUpContainer/> here */}
                 <CssBaseline/>
                 <Paper className={classes.paper}>
                     <Avatar className={classes.avatar}>
-                        {/* Can't put <LoginSignUpContainer/> here */}
                         <LockOutlinedIcon/>
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Log In!
+                        Sign Up!
                     </Typography>
                     <form className={classes.form}>
-                        {/* Can't put <LoginSignUpContainer/> here */}
                         <FormControl margin="normal" required fullWidth>
                             <InputLabel htmlFor="email">Email Address</InputLabel>
-                            <Input id="email" name="email" autoComplete="email" autoFocus/>
+                            <Input id="email" name="email" value={this.state.email} onChange={this.handleChange} autoComplete="email" autoFocus/>
                         </FormControl>
                         <FormControl margin="normal" required fullWidth>
                             <InputLabel htmlFor="password">Password</InputLabel>
-                            <Input name="password" type="password" id="password" autoComplete="current-password"/>
+                            <Input name="password" type="password" value={this.state.password} id="password" autoComplete="current-password"/>
                         </FormControl>
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary"/>}
                             label="Remember me"
                         />
 
-                        <div onClick={this.login}>
+                        <div onClick={this.signup}>
                             <Button
                                 type="submit"
                                 fullWidth
                                 variant="contained"
                                 color="primary"
                                 className={classes.submit}
-                            > Log In
-                                <Link to={{
-                                    pathname: '/Upload'
-                                }}>
-                                </Link>
+                            > Sign Up
                             </Button>
                         </div>
                     </form>
@@ -133,8 +123,8 @@ class Login extends Component {
     }
 }
 
-Login.propTypes = {
+SignUp.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Login);
+export default withStyles(styles)(SignUp);

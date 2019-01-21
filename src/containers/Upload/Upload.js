@@ -7,8 +7,6 @@ import Stack from '../../containers/Stack/Stack';
 import {storage} from '../../config/Fire';
 import {Link} from 'react-router-dom';
 
-// import { Alertify } from 'alertifyjs';
-
 class Upload extends Component {
     constructor(props) {
         super(props);
@@ -64,23 +62,25 @@ class Upload extends Component {
 
         uploadTask.on('state_changed',
             (snapshot) => {
-                // progrss function ....
+                // Progress function
+                // Math to convert progress to percentage
                 const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                this.setState({progress});
+                console.log("Here's the progress " + progress + "%"); // Output will be in %
+                this.setState({progress: progress});
             },
             (error) => {
-                // error function ....
+                // Error function
                 console.log(error);
             },
             () => {
-                // complete function ....
+                // Complete function
                 storage.ref('images').child(file.name).getDownloadURL().then(url => {
                     console.log(url);
                     this.setState({url});
                 })
             });
 
-        let user = firebase.auth().currentUser;
+        let user = firebase.auth().currentUser; // grab user that's currently logged on
         let userEmail = "";
 
         if (user !== null) {
@@ -91,8 +91,10 @@ class Upload extends Component {
 
         const userInfo = {userEmail, file};
 
+        // Redirect to the stack upon photo submission
         this.setState({redirectToStackAfterPhotoSubmit: true});
 
+        // Post user information to the DB.
         axios.post(`/userInfo.json`, userInfo)
             .then((response) => console.log("Here's the response " + response))
             .catch(error => console.log("Here's the error " + error));
@@ -100,7 +102,7 @@ class Upload extends Component {
 
     render() {
         const redirectToStackAfterPhotoSubmit = this.state.redirectToStackAfterPhotoSubmit;
-        const { url } = this.state;
+        const url = this.state.url;
 
         if (redirectToStackAfterPhotoSubmit) {
             return (
