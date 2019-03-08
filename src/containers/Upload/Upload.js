@@ -121,10 +121,8 @@ class Upload extends Component {
                     <strong>Chosen image is successful!
                         Now click Preview and make sure that's the one you want to upload!</strong>
                 </div> : null}
-
                 {/* Progress bar illustrating successful upload to DB */}
                 <progress value={this.state.progress} max="100"/>
-
                 <div className="inputWrapper">
                     <input
                         id="new_post_image"
@@ -135,11 +133,8 @@ class Upload extends Component {
                         onChange={this.imageUpload}
                         accept="image/*"
                     />
-
                     <label className="button is-success is-outlined" htmlFor="new_post_image">Upload</label>
-
                     <br/>
-
                     <button
                         id="preview"
                         type="submit"
@@ -150,9 +145,7 @@ class Upload extends Component {
                     >
                         Preview Image
                     </button>
-
                 </div>
-
                 {this.state.imgPrev ?
                     <div className="modal-dialog">
                         <div className="modal-content">
@@ -167,13 +160,10 @@ class Upload extends Component {
                                     &times;
                                 </button>
                             </div>
-
                             <div className="modal-body">
                                 <img className="img-responsive" src={this.state.previewImgURL}/>
                             </div>
-
                             {/*\/\/\/\/\/ Modal \/\/\/\/\/*/}
-
                             <div className="modal-footer">
                                 <button
                                     type="button"
@@ -183,7 +173,6 @@ class Upload extends Component {
                                 >
                                     Close
                                 </button>
-
                                 <Link to={{
                                     pathname: '/Deck'
                                 }}>
@@ -198,9 +187,7 @@ class Upload extends Component {
                                     </button>
                                 </Link>
                             </div>
-
                             {/*/\/\/\/\ End Modal /\/\/\/\/\*/}
-
                         </div>
                     </div>
                     : null}
@@ -208,5 +195,4 @@ class Upload extends Component {
         );
     }
 }
-
 export default Upload;
